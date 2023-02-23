@@ -1,3 +1,12 @@
+# UPDATED TO SUPPORT V29 Metadata
+
+This version is forked from the original and i applied pull request from samboycoding which adds support for v29 metadata = unity 2021.2+
+### NOTE : IF YOU WANT TO BUILD
+If you want to build this yourself , you have to replace the binobj dependency by the one located in github.com/ElCapor/Bin2Obj which is fixed too.
+
+
+
+
 # Development of Il2CppInspector is suspended
 
 It is with great regret that I have to announce that development work on Il2CppInspector has been halted for the foreseeable future.
