@@ -68,7 +68,7 @@ def ProcessJSON(jsonData):
 
 	# String literals for version >= 19
 	print('Processing string literals')
-	if 'virtualAddress' in jsonData['stringLiterals'][0]:
+	if jsonData['stringLiterals'] and 'virtualAddress' in jsonData['stringLiterals'][0]:
 		for d in jsonData['stringLiterals']:
 			DefineString(d)
 
