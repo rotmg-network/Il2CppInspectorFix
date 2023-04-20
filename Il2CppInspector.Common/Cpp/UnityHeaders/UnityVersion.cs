@@ -77,7 +77,15 @@ namespace Il2CppInspector.Cpp.UnityHeaders
             // Position of Unity version string in asset files
             file.Position = 0x14;
 
-            // Read null-terminated string
+            // ElCapor ~~ 20/04/23
+            // Add check to fix "Could not determine version from unity asset file"
+            byte check = reader.ReadByte();
+            if (check== 0)
+            {
+                file.Position = 0x30; // new index of unity version in some files
+            }
+
+                // Read null-terminated string
             var bytes = new List<byte>();
             var maxLength = 15;
             byte b;
