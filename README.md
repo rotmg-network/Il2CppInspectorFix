@@ -1,6 +1,6 @@
-# UPDATED TO SUPPORT V29 Metadata
+# UPDATED TO SUPPORT V29 Metadata and Fixed global-metadata.dat
 
-This version is forked from the original and i applied pull request from samboycoding which adds support for v29 metadata = unity 2021.2+
+This version is forked from the original and i applied pull request from samboycoding which adds support for v29 metadata = unity 2021.2+.
 ### NOTE : IF YOU WANT TO BUILD
 If you want to build this yourself , you have to replace the binobj dependency by the one located in github.com/ElCapor/Bin2Obj which is fixed too.
 
