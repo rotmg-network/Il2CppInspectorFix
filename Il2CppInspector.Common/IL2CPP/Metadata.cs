@@ -104,7 +104,7 @@ namespace Il2CppInspector
             // in the header after the sanity and version fields, and since it will always point directly to the first byte after the end of the header,
             // we can use this value to determine the actual header length and therefore narrow down the metadata version to 24.0/24.1 or 24.2.
 
-            if (!pluginResult.SkipValidation) {
+            if (false) {
                 var realHeaderLength = Header.stringLiteralOffset;
 
                 if (realHeaderLength != Sizeof(typeof(Il2CppGlobalMetadataHeader))) {
