@@ -131,12 +131,26 @@ namespace Il2CppInspector.Reflection
 
             // Find all custom attribute generators (populate AttributesByIndices) (use ToList() to force evaluation)
             var allAssemblyAttributes = Assemblies.Select(a => a.CustomAttributes).ToList();
-            var allTypeAttributes = TypesByDefinitionIndex.Select(t => t.CustomAttributes).ToList();
-            var allEventAttributes = TypesByDefinitionIndex.SelectMany(t => t.DeclaredEvents).Select(e => e.CustomAttributes).ToList();
-            var allFieldAttributes = TypesByDefinitionIndex.SelectMany(t => t.DeclaredFields).Select(f => f.CustomAttributes).ToList();
-            var allPropertyAttributes = TypesByDefinitionIndex.SelectMany(t => t.DeclaredProperties).Select(p => p.CustomAttributes).ToList();
-            var allMethodAttributes = MethodsByDefinitionIndex.Select(m => m.CustomAttributes).ToList();
-            var allParameterAttributes = MethodsByDefinitionIndex.SelectMany(m => m.DeclaredParameters).Select(p => p.CustomAttributes).ToList();
+            var allTypeAttributes = TypesByDefinitionIndex.Select(t => t?.CustomAttributes).ToList();
+            var allEventAttributes = TypesByDefinitionIndex
+                .SelectMany(t => t?.DeclaredEvents ?? Enumerable.Empty<EventInfo>())
+                .Select(e => e?.CustomAttributes ?? Enumerable.Empty<CustomAttributeData>())
+                .ToList();
+            var allFieldAttributes = TypesByDefinitionIndex
+                .SelectMany(t => t?.DeclaredFields ?? Enumerable.Empty<FieldInfo>())
+                .Select(f => f?.CustomAttributes ?? Enumerable.Empty<CustomAttributeData>())
+                .ToList();
+            var allPropertyAttributes = TypesByDefinitionIndex
+                .SelectMany(t => t?.DeclaredProperties ?? Enumerable.Empty<PropertyInfo>())
+                .Select(p => p?.CustomAttributes ?? Enumerable.Empty<CustomAttributeData>())
+                .ToList();
+            var allMethodAttributes = MethodsByDefinitionIndex
+                .Select(m => m?.CustomAttributes)
+                .ToList();
+            var allParameterAttributes = MethodsByDefinitionIndex
+                .SelectMany(m => m?.DeclaredParameters ?? Enumerable.Empty<ParameterInfo>())
+                .Select(p => p?.CustomAttributes ?? Enumerable.Empty<CustomAttributeData>())
+                .ToList();
 
             // Populate list of unique custom attribute generators for each type
             CustomAttributeGenerators = AttributesByIndices.Values
@@ -151,11 +165,15 @@ namespace Il2CppInspector.Reflection
             // Create method invokers (one per signature, in invoker index order)
             // Generic type definitions have an invoker index of -1
             foreach (var method in MethodsByDefinitionIndex) {
+                if (method == null)
+                {
+                    break;
+                }
                 var index = package.GetInvokerIndex(method.DeclaringType.Assembly.ModuleDefinition, method.Definition);
                 if (index != -1 && index < MethodInvokers.Length) {
                     if (MethodInvokers[index] == null)
                         MethodInvokers[index] = new MethodInvoker(method, index);
-
+                    //this
                     method.Invoker = MethodInvokers[index];
                 }
             }
