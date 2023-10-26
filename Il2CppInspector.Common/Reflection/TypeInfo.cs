@@ -213,7 +213,16 @@ namespace Il2CppInspector.Reflection
                 var collection = genericTypeDefinition.DeclaredConstructors;
                 for (int i = 0; i < collection.Count; i++) {
                     if (collection[i].RootDefinition == definition.RootDefinition)
-                        return DeclaredConstructors[i];
+                    {
+                        try
+                        {
+                            return DeclaredConstructors[i];
+                        }
+                        catch (NullReferenceException)
+                        {
+                            return definition;
+                        }
+                    }
                 }
             }
             return definition;
@@ -225,7 +234,14 @@ namespace Il2CppInspector.Reflection
                 var collection = genericTypeDefinition.DeclaredMethods;
                 for (int i = 0; i < collection.Count; i++) {
                     if (collection[i].RootDefinition == definition.RootDefinition)
-                        return DeclaredMethods[i];
+                        try
+                        {
+                            return DeclaredMethods[i];
+                        }
+                        catch (NullReferenceException)
+                        {
+                            return definition;
+                        }
                 }
             }
             return definition;
@@ -924,10 +940,6 @@ namespace Il2CppInspector.Reflection
                 return MakeGenericType(typeArguments);
             else if (HasElementType) {
                 var elementType = ElementType.SubstituteGenericArguments(typeArguments, methodArguments);
-                if (elementType == null)
-                {
-                    return this;
-                }
                 if (IsArray)
                     return elementType.MakeArrayType(GetArrayRank());
                 else if (IsByRef)

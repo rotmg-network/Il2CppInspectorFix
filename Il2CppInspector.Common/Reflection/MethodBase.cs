@@ -203,7 +203,11 @@ namespace Il2CppInspector.Reflection
             MethodBase result;
             if (genericMethodInstances.TryGetValue(typeArguments, out result))
                 return result;
-            result = MakeGenericMethodImpl(typeArguments);
+            try
+            {
+                result = MakeGenericMethodImpl(typeArguments);
+            }
+            catch(NullReferenceException) { return result; }
             genericMethodInstances[typeArguments] = result;
             return result;
         }
