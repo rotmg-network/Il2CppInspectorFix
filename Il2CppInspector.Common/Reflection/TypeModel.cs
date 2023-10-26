@@ -170,7 +170,7 @@ namespace Il2CppInspector.Reflection
                     break;
                 }
                 var index = package.GetInvokerIndex(method.DeclaringType.Assembly.ModuleDefinition, method.Definition);
-                if (index != -1 && index < MethodInvokers.Length) {
+                if (index != -1) {
                     if (MethodInvokers[index] == null)
                         MethodInvokers[index] = new MethodInvoker(method, index);
                     //this
