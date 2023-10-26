@@ -323,8 +323,6 @@ namespace Il2CppInspector.Cpp
         /// </summary>
         /// <param name="ti"></param>
         public void IncludeType(TypeInfo ti) {
-            if (ti == null)
-                return;
             if (VisitedTypes.Contains(ti))
                 return;
             if (ti.ContainsGenericParameters)

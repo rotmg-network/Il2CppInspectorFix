@@ -392,24 +392,7 @@ namespace Il2CppInspector.Reflection
                         n = DeclaringType.Name + "+" + n;
                     var ga = GetGenericArguments();
                     if (ga.Any())
-                        if (ga == null)
-                        {
-                            return "Fuckall";
-                        }
-                    n += "[";
-                    n += string.Join(",", ga.Select(x =>
-                    {
-                        if (x != null)
-                        {
-                            if (x.Namespace != Namespace)
-                            {
-                                return x.FullName ?? x.Name;
-                            }
-                            return x.Name;
-                        }
-                        return ""; // Return an empty string if x is null
-                    }));
-                    n += "]";
+                        n += "[" + string.Join(",", ga.Select(x => x.Namespace != Namespace ? x.FullName ?? x.Name : x.Name)) + "]";
                     return n;
                 }
             }
@@ -930,7 +913,7 @@ namespace Il2CppInspector.Reflection
 
         public TypeInfo SubstituteGenericArguments(TypeInfo[] typeArguments, TypeInfo[] methodArguments = null) {
             if (!ContainsGenericParameters)
-                    return this;
+                return this;
 
             if (IsGenericTypeParameter)
                 return typeArguments[GenericParameterPosition];

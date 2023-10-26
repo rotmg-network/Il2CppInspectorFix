@@ -102,7 +102,7 @@ namespace Il2CppInspector
 
                 // We'll work back one pointer width at a time trying to find the first CodeGenModule
                 // Let's hope there aren't more than 200 DLLs in any given application :)
-                var maxCodeGenModules = 90;
+                var maxCodeGenModules = 200;
 
                 for (int backtrack = 0; backtrack < maxCodeGenModules && (codeRegVas?.Count() ?? 0) != 1; backtrack++) {
                     // Unwind from CodeGenModules + x -> CodeRegistration + y

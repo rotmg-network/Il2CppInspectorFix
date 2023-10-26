@@ -179,13 +179,12 @@ namespace Il2CppInspector.Model
             // Add method definitions and types used by them to C++ type model
             Group = "types_from_methods";
 
-            foreach (var method in TypeModel.MethodsByDefinitionIndex.Where(m => m != null && m.VirtualAddress.HasValue))
-            {
+            foreach (var method in TypeModel.MethodsByDefinitionIndex.Where(m => m.VirtualAddress.HasValue)) {
                 declarationGenerator.IncludeMethod(method);
                 AddTypes(declarationGenerator.GenerateRemainingTypeDeclarations());
 
                 var fnPtr = declarationGenerator.GenerateMethodDeclaration(method);
-                Methods.Add(method, fnPtr, new AppMethod(method, fnPtr) { Group = Group });
+                Methods.Add(method, fnPtr, new AppMethod(method, fnPtr) {Group = Group});
             }
 
             // Add generic methods definitions and types used by them to C++ type model
@@ -221,14 +220,7 @@ namespace Il2CppInspector.Model
 
                             if (usage.Type == MetadataUsageType.TypeInfo)
                                 // Regular type definition
-                                try
-                                {
-                                    Types[type].TypeClassAddress = address;
-                                }
-                                catch(ArgumentNullException)
-                                {
-                                    break;
-                                }
+                                Types[type].TypeClassAddress = address;
 
                             else if (!Types.ContainsKey(type))
                                 // Generic type definition has no associated C++ type, therefore no dictionary sub-key
