@@ -234,14 +234,8 @@ namespace Il2CppInspector.Reflection
                 var collection = genericTypeDefinition.DeclaredMethods;
                 for (int i = 0; i < collection.Count; i++) {
                     if (collection[i].RootDefinition == definition.RootDefinition)
-                        try
-                        {
-                            return DeclaredMethods[i];
-                        }
-                        catch (NullReferenceException)
-                        {
-                            return definition;
-                        }
+                        return DeclaredMethods[i];
+        
                 }
             }
             return definition;
@@ -392,7 +386,7 @@ namespace Il2CppInspector.Reflection
                         n = DeclaringType.Name + "+" + n;
                     var ga = GetGenericArguments();
                     if (ga.Any())
-                        n += "[" + string.Join(",", ga.Select(x => x.Namespace != Namespace ? x.FullName ?? x.Name : x.Name)) + "]";
+                        n += "[" + string.Join(",", ga.Select(x => (x?.Namespace != Namespace ? x?.FullName ?? x?.Name : x?.Name) ?? "")) + "]";
                     return n;
                 }
             }
@@ -912,6 +906,7 @@ namespace Il2CppInspector.Reflection
         }
 
         public TypeInfo SubstituteGenericArguments(TypeInfo[] typeArguments, TypeInfo[] methodArguments = null) {
+            // the issue here is that when type arguments is trying to return for a generic type in the type arguments there is nothing and so it returns null.
             if (!ContainsGenericParameters)
                 return this;
 
@@ -923,7 +918,8 @@ namespace Il2CppInspector.Reflection
                 return MakeGenericType(typeArguments);
             else if (HasElementType) {
                 var elementType = ElementType.SubstituteGenericArguments(typeArguments, methodArguments);
-                if (IsArray)
+                if (elementType == null) return this;
+                else if (IsArray)
                     return elementType.MakeArrayType(GetArrayRank());
                 else if (IsByRef)
                     return elementType.MakeByRefType();

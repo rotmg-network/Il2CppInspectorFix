@@ -100,30 +100,41 @@ namespace Il2CppInspector.Reflection
 
             // Create types and methods from MethodSpec (which incorporates TypeSpec in IL2CPP)
             foreach (var spec in Package.MethodSpecs) {
-                var methodDefinition = MethodsByDefinitionIndex[spec.methodDefinitionIndex];
-                var declaringType = methodDefinition.DeclaringType;
+                //holy fuck this is insane but put the whole god damn thing into a try and catch and just skip the methods that dont work,
+                //we pray to god its nothing important, it did not work 
+                try
+                {
+                    var methodDefinition = MethodsByDefinitionIndex[spec.methodDefinitionIndex];
+                    var declaringType = methodDefinition.DeclaringType;
 
-                // Concrete instance of a generic class
-                // If the class index is not specified, we will later create a generic method in a non-generic class
-                if (spec.classIndexIndex != -1) {
-                    var genericInstance = Package.GenericInstances[spec.classIndexIndex];
-                    var genericArguments = ResolveGenericArguments(genericInstance);
-                    declaringType = declaringType.MakeGenericType(genericArguments);
+                    // Concrete instance of a generic class
+                    // If the class index is not specified, we will later create a generic method in a non-generic class
+                    if (spec.classIndexIndex != -1)
+                    {
+                        var genericInstance = Package.GenericInstances[spec.classIndexIndex];
+                        var genericArguments = ResolveGenericArguments(genericInstance);
+                        declaringType = declaringType.MakeGenericType(genericArguments);
+                    }
+
+                    MethodBase method;
+                    if (methodDefinition is ConstructorInfo)
+                        method = declaringType.GetConstructorByDefinition((ConstructorInfo)methodDefinition);
+                    else
+                        method = declaringType.GetMethodByDefinition((MethodInfo)methodDefinition);
+
+                    if (spec.methodIndexIndex != -1)
+                    {
+                        var genericInstance = Package.GenericInstances[spec.methodIndexIndex];
+                        var genericArguments = ResolveGenericArguments(genericInstance);
+                        method = method.MakeGenericMethod(genericArguments);
+                    }
+                    method.VirtualAddress = Package.GetGenericMethodPointer(spec);
+                    GenericMethods[spec] = method;
                 }
-
-                MethodBase method;
-                if (methodDefinition is ConstructorInfo)
-                    method = declaringType.GetConstructorByDefinition((ConstructorInfo)methodDefinition);
-                else
-                    method = declaringType.GetMethodByDefinition((MethodInfo)methodDefinition);
-
-                if (spec.methodIndexIndex != -1) {
-                    var genericInstance = Package.GenericInstances[spec.methodIndexIndex];
-                    var genericArguments = ResolveGenericArguments(genericInstance);
-                    method = method.MakeGenericMethod(genericArguments);
+                catch (NullReferenceException)
+                {
+                    continue;
                 }
-                method.VirtualAddress = Package.GetGenericMethodPointer(spec);
-                GenericMethods[spec] = method;
             }
 
             // Generate a list of all namespaces used

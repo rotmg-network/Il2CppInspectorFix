@@ -102,7 +102,7 @@ namespace Il2CppInspector
 
                 // We'll work back one pointer width at a time trying to find the first CodeGenModule
                 // Let's hope there aren't more than 200 DLLs in any given application :)
-                var maxCodeGenModules = 200;
+                var maxCodeGenModules = 86; // this is changed from 200 to 86 for RotMG, cause there are known 84 code gen modules, this is for speed reasons this take the most time 
 
                 for (int backtrack = 0; backtrack < maxCodeGenModules && (codeRegVas?.Count() ?? 0) != 1; backtrack++) {
                     // Unwind from CodeGenModules + x -> CodeRegistration + y

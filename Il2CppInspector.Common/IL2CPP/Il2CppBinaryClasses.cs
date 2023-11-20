@@ -61,6 +61,10 @@ namespace Il2CppInspector
         public ulong unresolvedVirtualCallCount;
         [Version(Min = 22)]
         public ulong unresolvedVirtualCallPointers;
+        // This was addded in v29.1 for the original update that caused shit to go wack this was the problem
+        // Adding this doesnt give any weird errors, still have the error with types tho...
+        public ulong unresolvedInstanceCallPointers;
+        public ulong unresolvedStaticCallPointers;
 
         // Added in metadata v23
         [Version(Min = 23)]

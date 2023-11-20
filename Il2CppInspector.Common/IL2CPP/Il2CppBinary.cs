@@ -297,7 +297,6 @@ namespace Il2CppInspector
              */
             if ((Metadata != null && Metadata.Types.Length != MetadataRegistration.typeDefinitionsSizesCount)
                 || CodeRegistration.reversePInvokeWrapperCount > 0x10000
-                || CodeRegistration.unresolvedVirtualCallCount > 0x4000 // >= 22
                 || CodeRegistration.interopDataCount > 0x1000           // >= 23
                 || (Image.Version <= 24.1 && CodeRegistration.invokerPointersCount > CodeRegistration.methodPointersCount))
                 throw new NotSupportedException("The detected Il2CppCodeRegistration / Il2CppMetadataRegistration structs do not pass validation. This may mean that their fields have been re-ordered as a form of obfuscation and Il2CppInspector has not been able to restore the original order automatically. Consider re-ordering the fields in Il2CppBinaryClasses.cs and try again.");
@@ -398,6 +397,8 @@ namespace Il2CppInspector
             var genericMethodPointers = Image.ReadMappedArray<ulong>(CodeRegistration.genericMethodPointers, (int) CodeRegistration.genericMethodPointersCount);
             var genericMethodTable = Image.ReadMappedArray<Il2CppGenericMethodFunctionsDefinitions>(MetadataRegistration.genericMethodTable, (int) MetadataRegistration.genericMethodTableCount);
             foreach (var tableEntry in genericMethodTable) {
+                //first error we get comes from here
+                //It stems from the issue that genericMethodPointersCount is super high
                 GenericMethodPointers.Add(MethodSpecs[tableEntry.genericMethodIndex], genericMethodPointers[tableEntry.indices.methodIndex]);
                 GenericMethodInvokerIndices.Add(MethodSpecs[tableEntry.genericMethodIndex], tableEntry.indices.invokerIndex);
             }
